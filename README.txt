@@ -68,6 +68,11 @@ The AS3 Socket class doesn't implement this mechanism, which renders it useless 
 The class RFC2817Socket (by Christian Cantrell) effectively lets us implement this, as long as the proxy settings are known and provided by the interface that instantiates the WebSocket. As such, if you want to support proxied conncetions, you'll have to supply this information to the WebSocket constructor when Flash is being used. One way to go about it would be to ask the user for proxy settings information if the initial connection fails.
 
 
+* Javascript compress
+
+Install YUI Compressor:
+http://yuilibrary.com/projects/yuicompressor/
+
 * How to build WebSocketMain.swf
 
 Install Flex 4 SDK:
