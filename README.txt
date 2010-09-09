@@ -52,22 +52,6 @@ It should work on:
 It may or may not work on other browsers such as Safari, Opera or IE 6. Patch for these browsers are appreciated, but I will not work on fixing issues specific to these browsers by myself.
 
 
-* Flash socket policy file
-
-This implementation uses Flash's socket, which means that your server must provide Flash socket policy file to declare the server accepts connections from Flash.
-
-If you use web-socket-ruby available at
-http://github.com/gimite/web-socket-ruby/tree/master
-, you don't need anything special, because web-socket-ruby handles Flash socket policy file request. But if you already provide socket policy file at port 843, you need to modify the file to allow access to Web Socket port, because it precedes what web-socket-ruby provides.
-
-If you use other Web Socket server implementation, you need to provide socket policy file yourself. See
-http://www.lightsphere.com/dev/articles/flash_socket_policy.html
-for details and sample script to run socket policy file server. node.js implementation is available here:
-http://github.com/LearnBoost/Socket.IO-node/blob/master/lib/socket.io/transports/flashsocket.js
-
-Actually, it's still better to provide socket policy file at port 843 even if you use web-socket-ruby. Flash always try to connect to port 843 first, so providing the file at port 843 makes startup faster.
-
-
 * Cookie considerations
 
 Cookie is sent if Web Socket host is the same as the origin of JavaScript. Otherwise it is not sent, because I don't know way to send right Cookie (which is Cookie of the host of Web Socket, I heard).
@@ -82,17 +66,6 @@ The WebSocket spec (http://tools.ietf.org/html/draft-hixie-thewebsocketprotocol)
 The AS3 Socket class doesn't implement this mechanism, which renders it useless for the scenarios where the user trying to open a socket is behind a proxy. 
 
 The class RFC2817Socket (by Christian Cantrell) effectively lets us implement this, as long as the proxy settings are known and provided by the interface that instantiates the WebSocket. As such, if you want to support proxied conncetions, you'll have to supply this information to the WebSocket constructor when Flash is being used. One way to go about it would be to ask the user for proxy settings information if the initial connection fails.
-
-
-* How to host HTML file and SWF file in different domains
-
-By default, HTML file and SWF file must be in the same domain. You can follow steps below to allow hosting them in different domain.
-
-WARNING: If you use the method below, HTML files in ANY domains can send arbitrary TCP data to your WebSocket server, regardless of configuration in Flash socket policy file. Arbitrary TCP data means that they can even fake request headers including Origin and Cookie.
-
-- Unzip WebSocketMainInsecure.zip to extract WebSocketMainInsecure.swf.
-- Put WebSocketMainInsecure.swf on your server, instead of WebSocketMain.swf.
-- In JavaScript, set WEB_SOCKET_SWF_LOCATION to URL of your WebSocketMainInsecure.swf.
 
 
 * How to build WebSocketMain.swf

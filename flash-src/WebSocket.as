@@ -16,10 +16,6 @@ import mx.controls.*;
 import mx.events.*;
 import mx.utils.*;
 import com.adobe.net.proxies.RFC2817Socket;
-import com.hurlant.crypto.tls.TLSSocket;
-import com.hurlant.crypto.tls.TLSConfig;
-import com.hurlant.crypto.tls.TLSEngine;
-import com.hurlant.crypto.tls.TLSSecurityParameters;
 import com.gsolo.encryption.MD5;
 
 [Event(name="message", type="flash.events.Event")]
@@ -35,8 +31,6 @@ public class WebSocket extends EventDispatcher {
   private static var CLOSED:int = 3;
   
   private var rawSocket:Socket;
-  private var tlsSocket:TLSSocket;
-  private var tlsConfig:TLSConfig;
   private var socket:Socket;
   private var main:WebSocketMain;
   private var url:String;
@@ -86,14 +80,7 @@ public class WebSocket extends EventDispatcher {
     } else {
       rawSocket = new Socket();
       if (scheme == "wss") {
-        tlsConfig= new TLSConfig(TLSEngine.CLIENT,
-            null, null, null, null, null,
-            TLSSecurityParameters.PROTOCOL_VERSION);
-        tlsConfig.trustAllCertificates = true;
-        tlsConfig.ignoreCommonNameMismatch = true;
-        tlsSocket = new TLSSocket();
-        tlsSocket.addEventListener(ProgressEvent.SOCKET_DATA, onSocketData);
-        socket = tlsSocket;
+        main.fatal("wss is not supported");
       } else {
         rawSocket.addEventListener(ProgressEvent.SOCKET_DATA, onSocketData);
         socket = rawSocket;
@@ -156,8 +143,7 @@ public class WebSocket extends EventDispatcher {
     main.log("connected");
 
     if (scheme == "wss") {
-      main.log("starting SSL/TLS");
-      tlsSocket.startTLS(rawSocket, host, tlsConfig);
+      main.fatal("wss is not supported");
     }
     
     dataQueue = [];
