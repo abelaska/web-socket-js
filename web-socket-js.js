@@ -899,15 +899,13 @@ ASProxy.prototype =
   WebSocket.CLOSED = 3;
 
   WebSocket.__tasks = [];
+  
+  WebSocket.__swfLocation = "WebSockets.swf";
 
   WebSocket.__initialize = function() {
-    if (WebSocket.__swfLocation) {
+    if (WebSocket.__swfLocation && !window.WEB_SOCKET_SWF_LOCATION) {
       // For backword compatibility.
       window.WEB_SOCKET_SWF_LOCATION = WebSocket.__swfLocation;
-    }
-    if (!window.WEB_SOCKET_SWF_LOCATION) {
-      console.error("[WebSocket] set WEB_SOCKET_SWF_LOCATION to location of WebSocketMain.swf");
-      return;
     }
     var container = document.createElement("div");
     container.id = "webSocketContainer";
