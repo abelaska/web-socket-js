@@ -81,6 +81,12 @@ http://opensource.adobe.com/wiki/display/flexsdk/Download+Flex+4
 $ cd flash-src
 $ ./build.sh
 
+* Merge
+
+$ git remote add gimite git://github.com/gimite/web-socket-js.git
+$ git fetch gimite
+$ git branch gimite-original gimite/master
+$ git merge gimite-original
 
 * License
 
