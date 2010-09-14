@@ -11,6 +11,8 @@ import flash.external.*;
 import flash.net.*;
 import flash.system.*;
 import flash.utils.*;
+import flash.utils.Timer;
+import flash.events.TimerEvent;
 import mx.core.*;
 import mx.controls.*;
 import mx.events.*;
@@ -48,11 +50,13 @@ public class WebSocket extends EventDispatcher {
   private var headers:String;
   private var noiseChars:Array;
   private var expectedDigest:String;
+  private var connectTimeout:Timer;
 
   public function WebSocket(
-      main:WebSocketMain, url:String, protocol:String,
+      main:WebSocketMain, url:String,
+      connectTimeoutMsecs:int = 3000,
       proxyHost:String = null, proxyPort:int = 0,
-      headers:String = null) {
+      protocol:String = null, headers:String = null) {
     this.main = main;
     initNoiseChars();
     this.url = url;
@@ -64,6 +68,7 @@ public class WebSocket extends EventDispatcher {
     this.path = m[5] || "/";
     this.origin = main.getOrigin();
     this.protocol = protocol;
+    this.connectTimeout = new Timer(connectTimeoutMsecs, 1);
     // if present and not the empty string, headers MUST end with \r\n
     // headers should be zero or more complete lines, for example
     // "Header1: xxx\r\nHeader2: yyyy\r\n"
@@ -91,8 +96,16 @@ public class WebSocket extends EventDispatcher {
     rawSocket.addEventListener(IOErrorEvent.IO_ERROR, onSocketIoError);
     rawSocket.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSocketSecurityError);
     rawSocket.connect(host, port);
-  }
   
+    // socket connect timeout timer
+    connectTimeout.start();
+    connectTimeout.addEventListener(TimerEvent.TIMER_COMPLETE, connectTimedout);
+  }
+
+  private function connectTimedout(e:TimerEvent):void {
+    onError("Connect timed out in " + connectTimeout.delay + " msec(s)");
+  }
+
   public function send(encData:String):int {
     var data:String = decodeURIComponent(encData);
     if (readyState == OPEN) {
@@ -143,6 +156,9 @@ public class WebSocket extends EventDispatcher {
   
   private function onSocketConnect(event:Event):void {
     main.log("connected");
+   
+    // stop connect timeout timer
+    connectTimeout.stop();
 
     if (scheme == "wss") {
       main.fatal("wss is not supported");
@@ -192,9 +208,9 @@ public class WebSocket extends EventDispatcher {
   private function onSocketIoError(event:IOErrorEvent):void {
     var message:String;
     if (readyState == CONNECTING) {
-      message = "cannot connect to Web Socket server at " + url + " (IoError)";
+      message = "cannot connect to Web Socket server at " + url + " ("+event.type+": "+event.text+")";
     } else {
-      message = "error communicating with Web Socket server at " + url + " (IoError)";
+      message = "error communicating with Web Socket server at " + url + " ("+event.type+": "+event.text+")";
     }
     onError(message);
   }
@@ -203,10 +219,10 @@ public class WebSocket extends EventDispatcher {
     var message:String;
     if (readyState == CONNECTING) {
       message =
-          "cannot connect to Web Socket server at " + url + " (SecurityError)\n" +
+          "cannot connect to Web Socket server at " + url + " ("+event.type+": "+event.text+")\n" +
           "make sure the server is running and Flash socket policy file is correctly placed";
     } else {
-      message = "error communicating with Web Socket server at " + url + " (SecurityError)";
+      message = "error communicating with Web Socket server at " + url + " ("+event.type+": "+event.text+")";
     }
     onError(message);
   }

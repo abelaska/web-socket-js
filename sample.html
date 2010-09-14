@@ -24,21 +24,21 @@
 
       // Connect to Web Socket.
       // Change host/port here to your own Web Socket server.
-      ws = new WebSocket("ws://localhost:10081/");
+      ws = new WebSocket("ws://localhost:10081/", 1000);
 
       // Set event handlers.
       ws.onopen = function() {
-        output("onopen");
+        output("onopen state=" + ws.readyState);
       };
       ws.onmessage = function(e) {
         // e.data contains received string.
-        output("onmessage: " + e.data);
+        output("onmessage(state="+ws.readyState+"): " + e.data);
       };
       ws.onclose = function() {
-        output("onclose");
+        output("onclose state=" + ws.readyState);
       };
       ws.onerror = function() {
-        output("onerror");
+        output("onerror state=" + ws.readyState);
       };
 
     }

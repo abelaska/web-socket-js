@@ -48,10 +48,10 @@ public class WebSocketMain extends Sprite {
   }
 
   public function create(
-      url:String, protocol:String,
+      url:String, connectTimeoutMsecs:int = 3000,
       proxyHost:String = null, proxyPort:int = 0,
-      headers:String = null):WebSocket {
-    return new WebSocket(this, url, protocol, proxyHost, proxyPort, headers);
+      protocol:String = null, headers:String = null):WebSocket {
+    return new WebSocket(this, url, connectTimeoutMsecs, proxyHost, proxyPort, protocol, headers);
   }
 
   public function getOrigin():String {
