@@ -53,10 +53,9 @@ public class WebSocket extends EventDispatcher {
   private var connectTimeout:Timer;
 
   public function WebSocket(
-      main:WebSocketMain, url:String,
-      connectTimeoutMsecs:int = 3000,
+      main:WebSocketMain, url:String, protocol:String = null,
       proxyHost:String = null, proxyPort:int = 0,
-      protocol:String = null, headers:String = null) {
+      headers:String = null, connectTimeoutMsecs:int = 1000) {
     this.main = main;
     initNoiseChars();
     this.url = url;

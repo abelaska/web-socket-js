@@ -628,7 +628,7 @@ ASProxy.prototype =
       "Open the page via Web server i.e. http://...");
   }
 
-  WebSocket = function(url, connectTimeoutMsecs, proxyHost, proxyPort, protocol, headers) {
+  WebSocket = function(url, protocol, proxyHost, proxyPort, headers, connectTimeoutMsecs) {
     var self = this;
     self.readyState = WebSocket.CONNECTING;
     self.bufferedAmount = 0;
@@ -636,15 +636,15 @@ ASProxy.prototype =
     // Otherwise, when onopen fires immediately, onopen is called before it is set.
     setTimeout(function() {
       WebSocket.__addTask(function() {
-        self.__createFlash(url, connectTimeoutMsecs, proxyHost, proxyPort, protocol, headers);
+        self.__createFlash(url, protocol, proxyHost, proxyPort, headers, connectTimeoutMsecs);
       });
     }, 1);
   }
   
-  WebSocket.prototype.__createFlash = function(url, connectTimeoutMsecs, proxyHost, proxyPort, protocol, headers) {
+  WebSocket.prototype.__createFlash = function(url, protocol, proxyHost, proxyPort, headers, connectTimeoutMsecs) {
     var self = this;
     self.__flash =
-      WebSocket.__flash.create(url, connectTimeoutMsecs || 3000, proxyHost || null, proxyPort || 0, protocol || null, headers || null);
+      WebSocket.__flash.create(url, protocol || null, proxyHost || null, proxyPort || 0, headers || null, connectTimeoutMsecs || 1000);
 
     self.__flash.addEventListener("open", function(fe) {
       try {
