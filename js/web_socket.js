@@ -5,10 +5,10 @@
 
 (function() {
   
-  if (window.WebSocket) return;
+  if (window.WebSocket) {return;}
 
   var console = window.console;
-  if (!console) console = {log: function(){ }, error: function(){ }};
+  if (!console) {console = {log: function(){ }, error: function(){ }};}
 
   if (!swfobject.hasFlashPlayerVersion("9.0.0")) {
     console.error("Flash Player is not installed.");
@@ -32,7 +32,7 @@
         self.__createFlash(url, protocol, proxyHost, proxyPort, headers, connectTimeoutMsecs);
       });
     }, 1);
-  }
+  };
   
   WebSocket.prototype.__createFlash = function(url, protocol, proxyHost, proxyPort, headers, connectTimeoutMsecs) {
     var self = this;
@@ -42,14 +42,14 @@
     self.__flash.addEventListener("open", function(fe) {
       try {
         self.readyState = self.__flash.getReadyState();
-        if (self.__timer) clearInterval(self.__timer);
+        if (self.__timer) {clearInterval(self.__timer);}
         if (window.opera) {
           // Workaround for weird behavior of Opera which sometimes drops events.
           self.__timer = setInterval(function () {
             self.__handleMessages();
           }, 500);
         }
-        if (self.onopen) self.onopen();
+        if (self.onopen) {self.onopen();}
       } catch (e) {
         console.error(e.toString());
       }
@@ -58,8 +58,8 @@
     self.__flash.addEventListener("close", function(fe) {
       try {
         self.readyState = self.__flash.getReadyState();
-        if (self.__timer) clearInterval(self.__timer);
-        if (self.onclose) self.onclose();
+        if (self.__timer) {clearInterval(self.__timer);}
+        if (self.onclose) {self.onclose();}
       } catch (e) {
         console.error(e.toString());
       }
@@ -75,8 +75,8 @@
 
     self.__flash.addEventListener("error", function(fe) {
       try {
-        if (self.__timer) clearInterval(self.__timer);
-        if (self.onerror) self.onerror();
+        if (self.__timer) {clearInterval(self.__timer);}
+        if (self.onerror) {self.onerror();}
       } catch (e) {
         console.error(e.toString());
       }
@@ -118,15 +118,15 @@
 
   WebSocket.prototype.close = function() {
     var self = this;
-    if (!self.__flash) return;
+    if (!self.__flash) {return;}
     self.readyState = self.__flash.getReadyState();
-    if (self.readyState == WebSocket.CLOSED || self.readyState == WebSocket.CLOSING) return;
+    if (self.readyState == WebSocket.CLOSED || self.readyState == WebSocket.CLOSING) {return;}
     self.__flash.close();
     // Sets/calls them manually here because Flash WebSocketConnection.close cannot fire events
     // which causes weird error:
     // > You are trying to call recursively into the Flash Player which is not allowed.
     self.readyState = WebSocket.CLOSED;
-    if (self.__timer) clearInterval(self.__timer);
+    if (self.__timer) {clearInterval(self.__timer);}
     if (self.onclose) {
        // Make it asynchronous so that it looks more like an actual
        // close event
@@ -168,7 +168,7 @@
     if (!('__events' in this)) {
       this.__events = {};
     }
-    if (!(type in this.__events)) return;
+    if (!(type in this.__events)) {return;}
     for (var i = this.__events.length; i > -1; --i) {
       if (listener === this.__events[type][i]) {
         this.__events[type].splice(i, 1);
@@ -184,12 +184,12 @@
    * @return void
    */
   WebSocket.prototype.dispatchEvent = function(event) {
-    if (!('__events' in this)) throw 'UNSPECIFIED_EVENT_TYPE_ERR';
-    if (!(event.type in this.__events)) throw 'UNSPECIFIED_EVENT_TYPE_ERR';
+    if (!('__events' in this)) {throw 'UNSPECIFIED_EVENT_TYPE_ERR';}
+    if (!(event.type in this.__events)) {throw 'UNSPECIFIED_EVENT_TYPE_ERR';}
 
     for (var i = 0, l = this.__events[event.type].length; i < l; ++ i) {
       this.__events[event.type][i](event);
-      if (event.cancelBubble) break;
+      if (event.cancelBubble) {break;}
     }
 
     if (false !== event.returnValue &&
@@ -217,8 +217,8 @@
           }
           this.onmessage(e);
         }
-      } catch (e) {
-        console.error(e.toString());
+      } catch (ex) {
+        console.error(ex.toString());
       }
     }
   };
@@ -237,7 +237,7 @@
       }
       object.dispatchEvent(event, arguments);
     };
-  }
+  };
 
   /**
    * Basic implementation of {@link <a href="http://www.w3.org/TR/DOM-Level-2-Events/events.html#Events-interface">DOM 2 EventInterface</a>}
@@ -331,7 +331,7 @@
       "1" /* width */, "1" /* height */, "9.0.0" /* SWF version */,
       null, {bridgeName: "webSocket"}, {hasPriority: true, allowScriptAccess: "always"}, null,
       function(e) {
-        if (!e.success) console.error("[WebSocket] swfobject.embedSWF failed");
+        if (!e.success) {console.error("[WebSocket] swfobject.embedSWF failed");}
       }
     );
     FABridge.addInitializationCallback("webSocket", function() {
@@ -359,9 +359,9 @@
   };
   
   WebSocket.__isFlashLite = function() {
-    if (!window.navigator || !window.navigator.mimeTypes) return false;
+    if (!window.navigator || !window.navigator.mimeTypes) {return false;}
     var mimeType = window.navigator.mimeTypes["application/x-shockwave-flash"];
-    if (!mimeType || !mimeType.enabledPlugin || !mimeType.enabledPlugin.filename) return false;
+    if (!mimeType || !mimeType.enabledPlugin || !mimeType.enabledPlugin.filename) {return false;}
     return mimeType.enabledPlugin.filename.match(/flashlite/i) ? true : false;
   };
 
