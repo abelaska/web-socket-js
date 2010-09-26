@@ -85,8 +85,7 @@ $ ./build.sh
 
 $ git remote add gimite git://github.com/gimite/web-socket-js.git
 $ git fetch gimite
-$ git branch gimite-original gimite/master
-$ git merge gimite-original
+$ git merge gimite/master
 
 * License
 

@@ -18,6 +18,7 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
+
 /*
  * The Bridge class, responsible for navigating AS instances
  */
@@ -363,7 +364,7 @@ FABridge.prototype =
     // accepts a type structure, returns a constructed type
     addTypeDataToCache: function(typeData)
     {
-        newType = new ASProxy(this, typeData.name);
+        var newType = new ASProxy(this, typeData.name);
         var accessors = typeData.accessors;
         for (var i = 0; i < accessors.length; i++)
         {
@@ -814,10 +815,10 @@ ASProxy.prototype =
       try {
         if (this.onmessage) {
           var e;
-          if (window.MessageEvent) {
+          if (window.MessageEvent && !window.opera) {
             e = document.createEvent("MessageEvent");
             e.initMessageEvent("message", false, false, data, null, null, window, null);
-          } else { // IE
+          } else { // IE and Opera, the latter one truncates the data parameter after any 0x00 bytes
             e = {data: data};
           }
           this.onmessage(e);
